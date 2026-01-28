@@ -1,0 +1,237 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../theme/app_theme.dart';
+import '../../models/riasec_models.dart';
+import '../../widgets/student_sidebar.dart';
+
+class AssessmentInstructionsScreen extends StatelessWidget {
+  final StudentDetails? studentDetails;
+
+  const AssessmentInstructionsScreen({super.key, this.studentDetails});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: StudentSidebar(currentRoute: '/student/assessment'),
+      appBar: AppBar(
+        title: const Text('Assessment Instructions'),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            tooltip: 'Return to Main Menu',
+            onPressed: () => context.go('/student/dashboard'),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Welcome Card
+            Card(
+              color: AppTheme.primaryBlue.withOpacity(0.1),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.quiz,
+                      size: 48,
+                      color: AppTheme.primaryBlue,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Welcome to RIASEC Assessment',
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (studentDetails != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              'Hello, ${studentDetails!.fullName}!',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: AppTheme.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Instructions
+            Text(
+              'How the Test Works',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            _buildInstructionItem(
+              context,
+              icon: Icons.help_outline,
+              title: 'Answer Honestly',
+              description: 'There are no right or wrong answers. Please answer each question based on your genuine interests, preferences, and personality.',
+            ),
+            _buildInstructionItem(
+              context,
+              icon: Icons.timer,
+              title: 'Take Your Time',
+              description: 'You can take as much time as you need. Read each question carefully and select the answer that best describes you.',
+            ),
+            _buildInstructionItem(
+              context,
+              icon: Icons.arrow_forward,
+              title: 'Navigate Questions',
+              description: 'Use the Previous and Next buttons to navigate between questions. You can review and change your answers before submitting.',
+            ),
+            _buildInstructionItem(
+              context,
+              icon: Icons.check_circle,
+              title: 'Complete All Questions',
+              description: 'Make sure to answer all questions before submitting. You will see a progress bar indicating how many questions you have completed.',
+            ),
+            _buildInstructionItem(
+              context,
+              icon: Icons.assessment,
+              title: 'Get Your Results',
+              description: 'After submission, your assessment will be reviewed. You will receive your RIASEC results and course recommendations via email.',
+            ),
+
+            const SizedBox(height: 32),
+
+            // Important Notes
+            Card(
+              color: AppTheme.primaryOrange.withOpacity(0.1),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.info,
+                      color: AppTheme.primaryOrange,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Important Notes',
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '• Your responses are confidential and will only be used for career guidance purposes.\n'
+                            '• The assessment typically takes 15-20 minutes to complete.\n'
+                            '• Make sure you are in a quiet environment where you can focus.\n'
+                            '• You cannot pause the assessment once started, so ensure you have enough time.',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppTheme.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 32),
+
+            // Action Buttons
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  context.go('/student/assessment', extra: studentDetails);
+                },
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Start Assessment'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => context.go('/student/dashboard'),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Return to Main Menu'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInstructionItem(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String description,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            backgroundColor: AppTheme.primaryBlue.withOpacity(0.1),
+            child: Icon(
+              icon,
+              color: AppTheme.primaryBlue,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppTheme.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
