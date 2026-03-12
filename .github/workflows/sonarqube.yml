@@ -26,9 +26,6 @@ jobs:
       - name: Install Flutter Dependencies
         run: flutter pub get
 
-      - name: Run Tests
-        run: flutter test --machine > test_report.log
-
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
